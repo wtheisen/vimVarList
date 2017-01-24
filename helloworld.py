@@ -7,7 +7,8 @@ import vim
 varKeys_C = ["int", "double", "char", "void"]
 
 #list of tracked variables in the file
-varList = []
+varList = {}
+varLine = 1
 
 #longest declaration line thus far
 longestLine = 1
@@ -15,7 +16,11 @@ longestLine = 1
 #creates a new buffer, moves it to the right, records it as the current buffer
 vim.command("vnew")
 vim.command("wincmd r")
-cb = vim.current.buffer
+
+currentBuffer = vim.current.buffer
+currentWindow = vim.current.window
+cursorPosition = currentWindow.cursor
+
 
 #iteretes through every line and checks for matches in var list
 for line in vim.buffers[1]:
@@ -23,15 +28,16 @@ for line in vim.buffers[1]:
         if var in line:
             lineList = line.split()
             if lineList[0] in varKeys_C:
-                    varList.append(line)
+                varList[str(varLine)] = line
+                varLine += 1
 
 #if we haven't already recorded the var, put it in the current buffer
 #   also check and keep track of the longest line
-for var in varList:
-    if var not in cb:
-        if len(var) > longestLine:
-            longestLine = len(var)
-        cb.append(var.lstrip())
+for key, value in varList.iteritems():
+    if value not in currentBuffer:
+        if len(value) > longestLine:
+            longestLine = len(value)
+        currentBuffer.append(value.lstrip())
 
 #resize the buffer to be the size of the longest line, switch to orig buffer
 vim.command("vertical resize " + str(longestLine))
