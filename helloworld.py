@@ -6,21 +6,26 @@ import vim
 #list of key words to check matches against
 varKeys_C = ["int", "double", "char", "void"]
 
-#list of tracked variables in the file
+#dict of tracked variables in the file and line in the list buffer
 varList = {}
 varLine = 1
 
 #longest declaration line thus far
 longestLine = 1
 
-#creates a new buffer, moves it to the right, records it as the current buffer
+#creates a new buffer, moves it to the right
 vim.command("vnew")
 vim.command("wincmd r")
 
+#allows the user to close the list without using !
+vim.command("setlocal buftype=nofile")
+vim.command("setlocal bufhidden=hide")
+vim.command("setlocal noswapfile")
+
+#save the current buffer, window, and cursor position
 currentBuffer = vim.current.buffer
 currentWindow = vim.current.window
 cursorPosition = currentWindow.cursor
-
 
 #iteretes through every line and checks for matches in var list
 for line in vim.buffers[1]:
@@ -40,5 +45,7 @@ for key, value in varList.iteritems():
         currentBuffer.append(value.lstrip())
 
 #resize the buffer to be the size of the longest line, switch to orig buffer
+#   also turn on syntax highlighting
 vim.command("vertical resize " + str(longestLine))
+vim.command("set syntax=cpp")
 vim.command("wincmd w")
