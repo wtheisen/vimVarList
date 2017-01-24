@@ -4,7 +4,10 @@
 import vim
 
 #list of key words to check matches against
-varKeys_C = ["int", "double", "char", "void"]
+varKeys = {}
+varKeys['c'] = ["int", "double", "char", "void"]
+varKeys['cpp'] = ["int", "double", "char", "void", "vector<int>"]
+varKeys['py'] = ["="]
 
 #dict of tracked variables in the file and line in the list buffer
 varList = {}
@@ -39,12 +42,17 @@ fileName = fileName[0]
 
 #iteretes through every line and checks for matches in var list
 for line in vim.buffers[1]:
-    for var in varKeys_C:
+    for var in varKeys[str(fileExt)]:
         if var in line:
             lineList = line.split()
-            if lineList[0] in varKeys_C:
-                varList[str(varLine)] = line
-                varLine += 1
+            if str(fileExt) == 'py':
+                if lineList[1] in varKeys[str(fileExt)]:
+                    varList[str(varLine)] = line
+                    varLine += 1
+            else:
+                if lineList[0] in varKeys[str(fileExt)]:
+                    varList[str(varLine)] = line
+                    varLine += 1
 
 #if we haven't already recorded the var, put it in the current buffer
 #   also check and keep track of the longest line
