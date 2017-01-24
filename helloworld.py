@@ -27,6 +27,16 @@ currentBuffer = vim.current.buffer
 currentWindow = vim.current.window
 cursorPosition = currentWindow.cursor
 
+#gets the file extension of the code file for syntax highlighting and variable
+#   matching
+fileName = vim.buffers[1]
+fileName = fileName.name
+fileName = fileName.split('/')
+fileName = fileName[-1]
+fileName = fileName.split('.')
+fileExt = fileName[1]
+fileName = fileName[0]
+
 #iteretes through every line and checks for matches in var list
 for line in vim.buffers[1]:
     for var in varKeys_C:
@@ -45,7 +55,10 @@ for key, value in varList.iteritems():
         currentBuffer.append(value.lstrip())
 
 #resize the buffer to be the size of the longest line, switch to orig buffer
-#   also turn on syntax highlighting
+#   turn on syntax highlighting, make the list buffer unmodifiable and name
+#   the buffer 'variable_list'
 vim.command("vertical resize " + str(longestLine))
-vim.command("set syntax=cpp")
+vim.command("setlocal syntax="+str(fileExt))
+vim.command("file variable_list")
+vim.command("setlocal nomodifiable")
 vim.command("wincmd w")
