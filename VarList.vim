@@ -3,6 +3,7 @@ if !has('python')
 endif
 
 function! VarList()
+    map <ENTER> :call SearchVar()<CR>
     pyfile VarList.py
 endfunction
 
@@ -12,11 +13,12 @@ endfunction
 
 function! ListenEnter()
     echo "listener triggered"
-    map <F9> :call SearchVar()<CR>
+    map <ENTER> :call SearchVar()<CR>
 endfunction
 
 function! ResetEnter()
     echo "Reset triggered"
+    unmap <ENTER>
 endfunction
 
 
