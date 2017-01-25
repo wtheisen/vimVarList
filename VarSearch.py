@@ -25,4 +25,5 @@ vim.command("wincmd w")
 vim.command('let @/ = ""')
 vim.command("/" + varName)
 vim.command("let @/='"+varName+"'")
+vim.command("normal n")
 
